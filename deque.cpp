@@ -41,7 +41,7 @@ class deque
             }
         }
 
-        void push_back(T _val) {
+        bool push_back(T _val) {
             if(length == capacity){
                 resize(capacity * 2);
             }
@@ -49,17 +49,20 @@ class deque
             arr[rearIndex] = _val;
             if(length == 0) frontIndex = rearIndex;         
             length++;
+            return true;
         }
 
-        void pop_back() {
-            if(length == 0) 
-                throw out_of_range("error: Deque is Empty");
+        bool pop_back() {
+            if(length == 0) {
+                return false;
+            }
 
             rearIndex = (rearIndex - 1 + capacity) % capacity;
             length--;
+            return true;
         }
 
-        void push_front(T _val) {
+        bool push_front(T _val) {
             if(length == capacity){
                 resize(capacity * 2);
             }
@@ -67,13 +70,16 @@ class deque
             arr[frontIndex] = _val;
             if(length == 0) rearIndex = frontIndex;
             length++;
+            return true;
         }
 
-        void pop_front() {
+        bool pop_front() {
             if(length == 0) 
-                throw out_of_range("error: Deque is Empty");
+                return false;
+
             frontIndex = (frontIndex + 1) % capacity;
             length--;
+            return true;
         }
 
         T front() {
@@ -106,7 +112,7 @@ class deque
         void resize(int _capacity) {
             T* newArr = new T[_capacity];
             for(int i=0; i<length; i++) {
-                newArr[i] = (*this)[i];
+                newArr[i] = arr[(frontIndex + i) % capacity]; 
             }
             delete[] arr;
             arr = newArr;
@@ -162,59 +168,82 @@ class deque
 
 };
 
-int main() {
-    deque<int> dq(5,100);
+int main() 
+{
+    deque<int> dq;
+    int menu, x, n;
 
-    dq.push_back(200);
-    dq.push_back(4123);
-    dq.push_back(34);
-    dq.push_back(5);
-    dq.push_back(876);
+    while (true) {
+        
+        cin >> menu;
 
-    for (int i = 0; i < dq.size(); i++) {
-        cout << dq[i] << " ";  
+        switch (menu) {
+            case 1:
+                dq = deque<int>();
+                break;
+            case 2:
+                cin >> n;
+                dq = deque<int>(n);
+                break;
+            case 3:
+                cin >> n >> x;
+                dq = deque<int>(n, x);
+                break;
+            case 4:
+                cin >> x;
+                cout << boolalpha << dq.push_back(x) << endl;
+                break;
+            case 5:
+                cout<< boolalpha << dq.pop_back() << endl;
+                break;
+            case 6:
+                cin >> x;
+                cout << boolalpha << dq.push_front(x) << endl;
+                break;
+            case 7:
+                cout << boolalpha << dq.pop_front() << endl;
+                break;
+           case 8:
+                cout << dq.front() << endl;
+                break;
+            case 9:
+                cout << dq.back() << endl;
+                break;
+            case 10:
+                cin >> n;
+                cout << dq[n] << endl;
+                break;
+            case 11:
+                cout << boolalpha << dq.empty() << endl;
+                break;
+            case 12:
+                cout << dq.size() << endl;
+                break;
+            case 13:
+                cin >> n;
+                dq.resize(n);
+                break;
+            case 14:
+                cin >> n >> x;
+                dq.resize(n, x);
+                break;
+            case 15:
+                cin >> n;
+                dq.reserve(n);
+                break;
+            case 16:
+                dq.shrink_to_fit();
+                break;
+            case 17:
+                dq.clear();
+                break;
+            case 18:
+                cout << dq.getCapacity() << endl;
+                break;
+            case 0:
+                return 0;
+        }
     }
-    cout << endl;
-
-    dq.pop_front();
-    cout << "After pop_front, front element: " << dq.front() << endl;  // Should print 100
-    dq.pop_front();
-    cout << "After pop_front, front element: " << dq.front() << endl;
-    dq.pop_front();
-    cout << "After pop_front, front element: " << dq.front() << endl;
-    dq.pop_front();
-    cout << "After pop_front, front element: " << dq.front() << endl;
-    dq.pop_front();
-    cout << "After pop_front, front element: " << dq.front() << endl;
-    dq.pop_front();
-    cout << "After pop_front, front element: " << dq.front() << endl;
-    dq.pop_front();
-    cout << "After pop_front, front element: " << dq.front() << endl;
-
-    dq.resize(20, 3);
-
-    for (int i = 0; i < dq.size(); i++) {
-        cout << dq[i] << " ";  
-    }
-    cout << endl;
-
-    dq.clear();
-    cout << "After clear, size of deque: " << dq.size() << endl;  // Should print 0
-    cout << "Is deque empty? " << (dq.empty() ? "Yes" : "No") << endl;  // Should print "Yes"
-
-    dq.push_back(200);
-    dq.push_back(4123);
-    dq.push_back(34);
-    dq.push_back(5);
-    dq.push_back(876);
-
-    dq.resize(3, 2);
-
-    for (int i = 0; i < dq.size(); i++) {
-        cout << dq[i] << " ";  
-    }
-    cout << endl;
-
 
     return 0;
-}
+}    
