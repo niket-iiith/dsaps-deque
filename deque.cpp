@@ -27,7 +27,7 @@ class deque
             length = 0;
             frontIndex = 0;
             rearIndex = -1;
-        }
+        } 
 
         deque(int _capacity, T _val) {
             arr = new T[_capacity];
@@ -105,8 +105,8 @@ class deque
 
         void resize(int _capacity) {
             T* newArr = new T[_capacity];
-            for(int i=0; i<length; i++){
-                newArr[i] = arr[i];
+            for(int i=0; i<length; i++) {
+                newArr[i] = (*this)[i];
             }
             delete[] arr;
             arr = newArr;
@@ -115,24 +115,25 @@ class deque
             rearIndex = length - 1;
         }
 
-        void resize(int _capacity, T _val){
-            T* newArr = new T[_capacity];
-
-            // If the new size n is greater than the current size of the deque, then insert new elements with value d at the end of the queue.
+        void resize(int _capacity, T _val)
+        {    
+            // If the new size n is greater than the current size of the deque, 
+            // then insert new elements with value d at the end of the queue.
             if(_capacity > length) {
-                for(int i=0; i<length; i++) newArr[i] = arr[i];
-                for(int i=length; i<_capacity; i++) newArr[i] = _val;
+                if(_capacity > capacity){
+                    resize(_capacity);
+                }
+                for(int i=length; i<_capacity; i++) {
+                    push_back(_val);
+                }
             }
-            // If the new size n is smaller than the current size, then keep n elements from the beginning of the deque.
-            else {
-                for(int i=0; i<_capacity; i++) newArr[i] = arr[i];
+            // If the new size n is smaller than the current size,
+            // then keep n elements from the beginning of the deque.
+            else if (_capacity < length) {
+                while (length-- > _capacity) {
+                    pop_back();  
+                }
             }
-            
-            delete[] arr;
-            arr = newArr;
-            frontIndex = 0;
-            rearIndex = _capacity - 1;
-            capacity = _capacity;
         }
 
         // change the capacity of deque to n, if n > current capacity; otherwise do nothing.
@@ -142,14 +143,16 @@ class deque
         }
 
         void shrink_to_fit() {
-            capacity = length;
+            if (capacity > length) {
+                resize(length);  
+            }
         }
 
         // removes all elements of deque
         void clear() {
             length = 0;
             frontIndex = 0;
-            rearIndex = 0;
+            rearIndex = -1;
         }
 
         // return the capacity of the queue
@@ -169,7 +172,7 @@ int main() {
     dq.push_back(876);
 
     for (int i = 0; i < dq.size(); i++) {
-        cout << dq[i] << " ";  // Should print "100 100 100 100 100"
+        cout << dq[i] << " ";  
     }
     cout << endl;
 
@@ -187,6 +190,31 @@ int main() {
     cout << "After pop_front, front element: " << dq.front() << endl;
     dq.pop_front();
     cout << "After pop_front, front element: " << dq.front() << endl;
+
+    dq.resize(20, 3);
+
+    for (int i = 0; i < dq.size(); i++) {
+        cout << dq[i] << " ";  
+    }
+    cout << endl;
+
+    dq.clear();
+    cout << "After clear, size of deque: " << dq.size() << endl;  // Should print 0
+    cout << "Is deque empty? " << (dq.empty() ? "Yes" : "No") << endl;  // Should print "Yes"
+
+    dq.push_back(200);
+    dq.push_back(4123);
+    dq.push_back(34);
+    dq.push_back(5);
+    dq.push_back(876);
+
+    dq.resize(3, 2);
+
+    for (int i = 0; i < dq.size(); i++) {
+        cout << dq[i] << " ";  
+    }
+    cout << endl;
+
 
     return 0;
 }
